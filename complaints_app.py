@@ -4,8 +4,8 @@ import gspread
 from google.oauth2.service_account import Credentials
 from datetime import datetime
 
-# ✅ تحميل بيانات Google Cloud من secrets.toml بدون JSON
-google_creds = st.secrets["GOOGLE_CREDENTIALS"]  # ✅ تحميل كائن القاموس مباشرة
+# ✅ تحميل بيانات Google Cloud من secrets.toml
+google_creds = st.secrets["GOOGLE_CREDENTIALS"]
 scopes = ["https://www.googleapis.com/auth/spreadsheets"]
 creds = Credentials.from_service_account_info(google_creds, scopes=scopes)
 client = gspread.authorize(creds)
@@ -42,22 +42,12 @@ def generate_complaint_id():
     next_serial = max(serial_numbers, default=0) + 1
     return f"{prefix}{next_serial:02d}"
 
-# ✅ واجهة Streamlit
-st.title("📋 نظام إدارة الشكاوى")
-
-# ✅ إضافة صورة الثعلب بجانب النص
-col1, col2 = st.columns([1, 2])  # عمود للصورة وعمود للنص
-
-with col1:  # عمود الصورة
-    st.image("https://upload.wikimedia.org/wikipedia/commons/6/6e/Grey_Fox_%28Urocyon_cinereoargenteus%29.jpg",
-             width=200, caption="🦊 الثعلب الجميل")
-
-with col2:  # عمود النص
-    st.write("""
-    **مرحبًا بك في نظام إدارة الشكاوى!**  
-    يمكنك تقديم شكوى من خلال إدخال التفاصيل في الحقول أدناه.  
-    نحن هنا لمساعدتك وسنتأكد من مراجعة جميع الشكاوى بأسرع وقت ممكن.  
-    """)
+# ✅ عرض العنوان والصورة بجانبه
+col1, col2 = st.columns([3, 1])  # تقسيم الصفحة إلى عمودين
+with col1:
+    st.title("📋 نظام إدارة الشكاوى")
+with col2:
+    st.image("assets/fox.jpg", width=120)  # استبدل بالمسار الصحيح للصورة
 
 st.header("📝 إرسال شكوى جديدة")
 
@@ -77,7 +67,7 @@ submitted_by = st.text_input("✍ اسم كاتب الشكوى (اختياري)"
 # ✅ حفظ تاريخ الإرسال تلقائيًا
 date_submitted = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-if st.button("🚀 إرسال الشكوى"):
+if st.button("إرسال الشكوى"):
     if product and details and contact_number:
         new_data = [date_submitted, complaint_id, product, severity, contact_number, details, submitted_by or ""]
         sheet.append_row(new_data)
@@ -88,7 +78,7 @@ if st.button("🚀 إرسال الشكوى"):
 # ✅ حماية قسم المسؤول بكلمة مرور (إخفاؤه بالكامل إذا لم يتم إدخال كلمة المرور الصحيحة)
 CORRECT_PASSWORD = "admin123"
 
-admin_password = st.text_input("🔒 أدخل كلمة المرور للمسؤولين", type="password")
+admin_password = st.text_input("", type="password", placeholder="🔒 أدخل كلمة المرور لعرض الشكاوى", help="متاح فقط للمسؤولين")
 
 if admin_password == CORRECT_PASSWORD:
     st.success("✅ تم تسجيل الدخول كمسؤول.")
