@@ -47,7 +47,8 @@ col1, col2 = st.columns([3, 1])  # تقسيم الصفحة إلى عمودين
 with col1:
     st.title("📋 نظام إدارة الشكاوى")
 with col2:
-    st.image("assets/fox.jpg", width=120)  # استبدل بالمسار الصحيح للصورة
+    IMAGE_URL = "https://upload.wikimedia.org/wikipedia/commons/3/30/Vulpes_vulpes_ssp_fulvus.jpg"
+    st.image("https://upload.wikimedia.org/wikipedia/commons/3/30/Vulpes_vulpes_ssp_fulvus.jpg", width=300)  # استبدل بالمسار الصحيح للصورة
 
 st.header("📝 إرسال شكوى جديدة")
 
